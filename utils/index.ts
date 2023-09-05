@@ -1,7 +1,7 @@
 // //X const axios = require('axios');
 // const url = 'https://cars-by-api-ninjas.p.rapidapi.com/v1/cars?model=corolla';
 
-import { CarsProps } from "@/types";
+import { CarsProps, FilterProps } from "@/types";
 
 // const options = {
 //   method: 'GET',
@@ -21,13 +21,15 @@ import { CarsProps } from "@/types";
 // 	console.error(error);
 // }
 
-export async function fetchCars() {
+export async function fetchCars(filters: FilterProps) {
 	const headers = {
 		'X-RapidAPI-Key': process.env.X_RAPID_API_KEY || "",
 		'X-RapidAPI-Host': 'cars-by-api-ninjas.p.rapidapi.com'
 	}
 
-	const response = await fetch('https://cars-by-api-ninjas.p.rapidapi.com/v1/cars?model=charger', {
+	const { manufacturer, model, year, fuel, limit } = filters
+
+	const response = await fetch(`https://cars-by-api-ninjas.p.rapidapi.com/v1/cars?manufacturer=${manufacturer}&year=${year}&model=${model}&fuel_type=${fuel}&limit=${limit}`, {
 		headers: headers
 	});
 
@@ -50,21 +52,21 @@ export const calculateCarRent = (city_mpg: number, year: number) => {
 
 	return rentalRatePerDay.toFixed(0);
 };
-export const generateCarImageUrl = (car:CarsProps, angle?:string) =>{
+export const generateCarImageUrl = (car: CarsProps, angle?: string) => {
 	// https://www.imagin.studio/car-image-api
 	// to generate car images 
 
 	const url = new URL('http://cdn.imagin.studio/getimage');
 
-	const {make,year,model} = car;
+	const { make, year, model } = car;
 
 	// require key for getting images of different angles
-	url.searchParams.append('customer',process.env.IMAGIN_API_KEY || '');
-	url.searchParams.append('make',make);
-	url.searchParams.append('model',model.split(' ')[0]);
-	url.searchParams.append('zoomType','fullscreen');
-	url.searchParams.append('modelYear',`${year}`);
-	url.searchParams.append('angle',`${angle}`);
+	url.searchParams.append('customer', process.env.IMAGIN_API_KEY || '');
+	url.searchParams.append('make', make);
+	url.searchParams.append('model', model.split(' ')[0]);
+	url.searchParams.append('zoomType', 'fullscreen');
+	url.searchParams.append('modelYear', `${year}`);
+	url.searchParams.append('angle', `${angle}`);
 
 	return `${url}`;
 }
