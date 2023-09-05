@@ -16,7 +16,13 @@ export interface SearchManufacturerProps {
 }
 
 export interface CustomFilterProps {
-    title: string
+    title: string,
+    options:OptionProps[]
+}
+
+export interface OptionProps {
+    title : string,
+    value : string;
 }
 
 export interface CarsProps {
